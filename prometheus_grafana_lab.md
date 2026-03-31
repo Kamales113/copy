@@ -19,12 +19,13 @@
 
 ```bash
 sudo su
-apt-get update -y
+apt update -y
 apt install docker.io -y
-service docker start
+systemctl start docker
+systemctl enable docker
+
 docker run -dit --name c01 ubuntu
 docker run -dit --name c02 ubuntu
-docker ps -a
 ```
 
 ---
@@ -45,7 +46,13 @@ Add this content:
 ```
 
 ```bash
-service docker restart
+sudo systemctl daemon-reexec
+sudo systemctl restart docker
+```
+🔍 VERIFY (VERY IMPORTANT)
+✔ Local test (inside Docker EC2):
+```
+curl http://localhost:9323/metrics
 ```
 
 > ✅ Verify in browser: `http://<docker-public-ip>:9323/metrics`
@@ -152,6 +159,13 @@ python app.py
 
 > ✅ Verify in browser: `http://<app-public-ip>:8000/metrics`
 
+> TEST NETWORK CONNECTIVITY
+
+👉 From Prometheus EC2:
+```
+curl http://<DOCKER_PRIVATE_IP>:9323/metrics
+curl http://<PYTHON_PRIVATE_IP>:8000/metrics
+```
 ---
 
 ## 🔁 STEP 9: Verify Targets in Prometheus
@@ -171,7 +185,7 @@ All three should show **UP**:
 sudo su
 wget https://dl.grafana.com/enterprise/release/grafana-enterprise-11.1.4.linux-amd64.tar.gz
 tar -zxvf grafana-enterprise-11.1.4.linux-amd64.tar.gz
-cd grafana-11.1.4
+cd grafana-v11.1.4
 ./bin/grafana-server
 ```
 
