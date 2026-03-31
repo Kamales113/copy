@@ -66,7 +66,7 @@ cd prometheus-2.53.2.linux-amd64
 ## 📝 STEP 4: Configure prometheus.yml
 
 ```bash
-nano /opt/prometheus/prometheus.yml
+nano prometheus.yml
 ```
 
 Add this config (replace IPs with your private IPs):
@@ -92,16 +92,10 @@ scrape_configs:
       - targets: ["<app-private-ip>:8000"]
 ```
 
-```bash
-sudo systemctl restart prometheus
-```
 
----
-
-## ▶️ STEP 5: Run Prometheus
+## ▶️ STEP 5  : Run Prometheus
 
 ```bash
-cd /opt/prometheus
 ./prometheus
 ```
 
@@ -110,16 +104,16 @@ cd /opt/prometheus
 ---
 
 ## 🐍 STEP 6: Setup Python App Machine
+# DO NOT use sudo su (stay as ubuntu user)
 
-```bash
-sudo su
-apt update
-apt install python3-pip -y
+```
+sudo apt update
+sudo apt install python3-venv python3-pip -y
 python3 -m venv myenv
 source myenv/bin/activate
+pip install --upgrade pip
 pip install prometheus_client
 ```
-
 ---
 
 ## 📝 STEP 7: Create app.py
@@ -153,7 +147,7 @@ if __name__ == '__main__':
 ## ▶️ STEP 8: Run Python App
 
 ```bash
-python3 app.py
+python app.py
 ```
 
 > ✅ Verify in browser: `http://<app-public-ip>:8000/metrics`
